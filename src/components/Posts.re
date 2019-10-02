@@ -1,11 +1,11 @@
 [@react.component]
 let make = (~posts) =>
-  <ul>
+  <div className=Theme.posts>
     {ReasonReact.array(
       Array.of_list(
         posts |> List.map((post: Types.post) =>
-          <li key={post.excerpt}>{ReasonReact.string(post.excerpt)}</li>
+          <Post post={post}/>
         ),
       ),
     )}
-  </ul>
+  </div>

@@ -52,13 +52,13 @@ type state = {
 };
 
 type action =
-  | PostsReady(option(list(Types.post)));
+  | SetPosts(option(list(Types.post)));
 
 [@react.component]
 let make = () => {
   let (state, dispatch) = React.useReducer((state, action) =>
   switch (action) {
-  | PostsReady(posts) => { ...state, posts }
+  | SetPosts(posts) => { ...state, posts }
   }, {posts: None});
 
   React.useEffect0(() => {
@@ -67,7 +67,7 @@ let make = () => {
         Axios.get("https://blog.risingstack.com/ghost/api/v2/content/posts/?key=c52dc242d7a6bbff4c6d010a44")
         |> then_((response) => {
           let posts = decodeResponse(response##data).posts
-          dispatch(PostsReady(Some(posts)));
+          dispatch(SetPosts(Some(posts)));
           resolve(
             None
           )
@@ -77,12 +77,15 @@ let make = () => {
     None;
   });
 
-
-  <div>
+  <div style=(
+    ReactDOMRe.Style.make(
+      ~background="#F5F8FA",
+      ())
+  )>
     <h1>{ReasonReact.string("Welcome to the RisingStack blog")}</h1>
     {
       switch state.posts {
-        | Some(posts) => 
+        | Some(posts) =>
           <Posts posts={posts} />
         | None => ReasonReact.string("Loading...") 
       }
